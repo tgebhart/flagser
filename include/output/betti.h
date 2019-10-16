@@ -7,9 +7,9 @@
 
 template <typename Complex> class betti_output_t : public file_output_t<Complex> {
 	Complex* complex;
-	unsigned short current_dimension = 0;
-	unsigned short min_dimension;
-	unsigned short max_dimension;
+	unsigned int current_dimension = 0;
+	unsigned int min_dimension;
+	unsigned int max_dimension;
 	coefficient_t modulus;
 	std::vector<size_t> betti;
 	std::vector<size_t> skipped;
@@ -34,7 +34,7 @@ public:
 
 	virtual void finished(bool with_cell_counts = true) override;
 	virtual void set_complex(Complex* _complex) override { complex = _complex; }
-	virtual void computing_barcodes_in_dimension(unsigned short dimension) override { current_dimension = dimension; }
+	virtual void computing_barcodes_in_dimension(unsigned int dimension) override { current_dimension = dimension; }
 	virtual void betti_number(size_t _betti, size_t _skipped) override {
 		betti.resize(current_dimension + 1, 0);
 		skipped.resize(current_dimension + 1, 0);
@@ -65,7 +65,7 @@ void print_ordinary(std::ostream& outstream, int min_dimension, int max_dimensio
       index_t cell_euler_characteristic = 0;
       for (int i = 0; i <= top_dimension; i++) cell_euler_characteristic += (i % 2 == 1 ? -1 : 1) * number_of_cells[i];
 
-      bool computed_full_homology = min_dimension == 0 && max_dimension == std::numeric_limits<unsigned short>::max();
+      bool computed_full_homology = min_dimension == 0 && max_dimension == std::numeric_limits<unsigned int>::max();
       if (computed_full_homology) {
         outstream << "# Euler characteristic:" << std::endl;
         outstream << cell_euler_characteristic << std::endl;

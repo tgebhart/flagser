@@ -17,7 +17,7 @@ class directed_flag_complex_cell_t {
 protected:
 	const vertex_index_t* vertices;
 #ifndef USE_CELLS_WITHOUT_DIMENSION
-	unsigned short dim;
+	unsigned int dim;
 #endif
 
 public:
@@ -25,8 +25,8 @@ public:
 	directed_flag_complex_cell_t() : vertices(nullptr) {}
 	directed_flag_complex_cell_t(const vertex_index_t* vertices) : vertices(vertices) {}
 #else
-	directed_flag_complex_cell_t(unsigned short _dim) : vertices(nullptr), dim(_dim) {}
-	directed_flag_complex_cell_t(unsigned short _dim, const vertex_index_t* vertices) : dim(_dim), vertices(vertices) {}
+	directed_flag_complex_cell_t(unsigned int _dim) : vertices(nullptr), dim(_dim) {}
+	directed_flag_complex_cell_t(unsigned int _dim, const vertex_index_t* vertices) : dim(_dim), vertices(vertices) {}
 #endif
 
 	vertex_index_t operator[](size_t index) const { return vertex(index); }
@@ -36,22 +36,22 @@ public:
 	directed_flag_complex_boundary_cell_t boundary(size_t i);
 	void set_vertices(vertex_index_t* _vertices) { vertices = _vertices; }
 #ifndef USE_CELLS_WITHOUT_DIMENSION
-	virtual unsigned short dimension() const { return dim; }
+	virtual unsigned int dimension() const { return dim; }
 #endif
 
 	const std::string to_string(
 #ifdef USE_CELLS_WITHOUT_DIMENSION
-	    unsigned short dim
+	    unsigned int dim
 #else
-	    unsigned short _dim = -1 // Ignore the dimension if it is saved with the cell
+	    unsigned int _dim = -1 // Ignore the dimension if it is saved with the cell
 #endif
 	    ) const {
 		const directed_flag_complex_cell_t* t = this;
 #ifndef USE_CELLS_WITHOUT_DIMENSION
-		unsigned short dim = dimension();
+		unsigned int dim = dimension();
 #endif
 		std::string s;
-		for (unsigned short index = 0; index < dim + 1; index++) {
+		for (unsigned int index = 0; index < dim + 1; index++) {
 			s += std::to_string(t->vertex(index));
 			if (index < dim) s += "|";
 		}
@@ -66,11 +66,11 @@ class directed_flag_complex_coboundary_cell_t : public directed_flag_complex_cel
 public:
 #ifdef USE_CELLS_WITHOUT_DIMENSION
 	directed_flag_complex_coboundary_cell_t(const vertex_index_t* vertices, vertex_index_t insert_vertex,
-	                                        unsigned short insert_position)
+	                                        unsigned int insert_position)
 	    : directed_flag_complex_cell_t(vertices), _insert_position(insert_position), _insert_vertex(insert_vertex) {}
 #else
-	directed_flag_complex_coboundary_cell_t(unsigned short dimension, const vertex_index_t* vertices,
-	                                        vertex_index_t insert_vertex, unsigned short insert_position)
+	directed_flag_complex_coboundary_cell_t(unsigned int dimension, const vertex_index_t* vertices,
+	                                        vertex_index_t insert_vertex, unsigned int insert_position)
 	    : _insert_position(insert_position), _insert_vertex(insert_vertex),
 	      directed_flag_complex_cell_t(dimension, vertices) {}
 #endif
@@ -81,7 +81,7 @@ public:
 	}
 
 #ifndef USE_CELLS_WITHOUT_DIMENSION
-	virtual unsigned short dimension() const override { return dim + 1; }
+	virtual unsigned int dimension() const override { return dim + 1; }
 #endif
 };
 
@@ -102,14 +102,14 @@ public:
 	directed_flag_complex_boundary_cell_t(const vertex_index_t* vertices, size_t _i)
 	    : directed_flag_complex_cell_t(vertices), i(_i) {}
 #else
-	directed_flag_complex_boundary_cell_t(unsigned short dimension, const vertex_index_t* vertices, size_t _i)
+	directed_flag_complex_boundary_cell_t(unsigned int dimension, const vertex_index_t* vertices, size_t _i)
 	    : i(_i), directed_flag_complex_cell_t(dimension, vertices) {}
 #endif
 
 	virtual vertex_index_t vertex(size_t index) const override { return vertices[index + (index < i ? 0 : 1)]; }
 
 #ifndef USE_CELLS_WITHOUT_DIMENSION
-	virtual unsigned short dimension() const override { return dim - 1; }
+	virtual unsigned int dimension() const override { return dim - 1; }
 #endif
 };
 
@@ -129,10 +129,10 @@ struct cell_hasher_t {
 		size_t hash = 0;
 		const directed_flag_complex_cell_t* cell = &c;
 #ifndef USE_CELLS_WITHOUT_DIMENSION
-		unsigned short dimension = c.dimension();
+		unsigned int dimension = c.dimension();
 #endif
 
-		for (unsigned short index = 0; index < dimension + 1; index++) {
+		for (unsigned int index = 0; index < dimension + 1; index++) {
 			hash ^= hasher(cell->vertex(index)) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
 		}
 
@@ -140,14 +140,14 @@ struct cell_hasher_t {
 	}
 
 #ifdef USE_CELLS_WITHOUT_DIMENSION
-	static void set_current_cell_dimension(unsigned short _dimension) { dimension = _dimension; }
-	static unsigned short dimension;
+	static void set_current_cell_dimension(unsigned int _dimension) { dimension = _dimension; }
+	static unsigned int dimension;
 #endif
 private:
 	std::hash<vertex_index_t> hasher;
 };
 #ifdef USE_CELLS_WITHOUT_DIMENSION
-unsigned short cell_hasher_t::dimension = 0;
+unsigned int cell_hasher_t::dimension = 0;
 #endif
 
 struct cell_comparer_t {
@@ -156,12 +156,12 @@ struct cell_comparer_t {
 		const directed_flag_complex_cell_t* l = &lhs;
 		const directed_flag_complex_cell_t* r = &rhs;
 #ifdef USE_CELLS_WITHOUT_DIMENSION
-		unsigned short dimension = cell_hasher_t::dimension;
+		unsigned int dimension = cell_hasher_t::dimension;
 #else
 		assert(l->dimension() == r->dimension());
-		unsigned short dimension = l->dimension();
+		unsigned int dimension = l->dimension();
 #endif
-		for (unsigned short index = 0; index < dimension + 1; index++) {
+		for (unsigned int index = 0; index < dimension + 1; index++) {
 			if (l->vertex(index) != r->vertex(index)) return false;
 		}
 
@@ -217,7 +217,7 @@ private:
 	template <typename Func>
 	void do_for_each_cell(Func* f, int min_dimension, int max_dimension,
 	                      const std::vector<vertex_index_t>& possible_next_vertices, vertex_index_t* prefix,
-	                      unsigned short prefix_size = 0) {
+	                      unsigned int prefix_size = 0) {
 		// As soon as we have the correct dimension, execute f
 		if (prefix_size >= min_dimension + 1) { (*f)(prefix, prefix_size); }
 

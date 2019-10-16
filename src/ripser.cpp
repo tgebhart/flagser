@@ -300,7 +300,7 @@ public:
 
 template <typename DistanceMatrix> class vietoris_rips_complex_t {
 	size_t n;
-	unsigned short max_dimension;
+	unsigned int max_dimension;
 	int current_dimension = 0;
 	rips_filtration_comparator<DistanceMatrix>* comparator = nullptr;
 	rips_filtration_comparator<DistanceMatrix>* next_comparator = nullptr;
@@ -311,7 +311,7 @@ template <typename DistanceMatrix> class vietoris_rips_complex_t {
 	mutable std::vector<index_t> _vertices_of_edge;
 
 public:
-	vietoris_rips_complex_t(DistanceMatrix& _distance_matrix, unsigned short _max_dimension, coefficient_t _modulus)
+	vietoris_rips_complex_t(DistanceMatrix& _distance_matrix, unsigned int _max_dimension, coefficient_t _modulus)
 	    : distance_matrix(_distance_matrix), n(_distance_matrix.size()), max_dimension(_max_dimension),
 	      binomial_coeff(n, _max_dimension + 2), _vertices_of_edge(2, 0), modulus(_modulus) {}
 

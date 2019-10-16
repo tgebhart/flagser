@@ -21,9 +21,9 @@ template <typename Complex> class barcode_hdf5_output_t : public output_t<Comple
 	std::vector<value_t> skipped_buffer;
 
 	Complex* complex;
-	unsigned short current_dimension = 0;
-	unsigned short min_dimension;
-	unsigned short max_dimension;
+	unsigned int current_dimension = 0;
+	unsigned int min_dimension;
+	unsigned int max_dimension;
 	coefficient_t modulus;
 	std::vector<size_t> betti;
 	std::vector<size_t> skipped;
@@ -86,9 +86,9 @@ public:
 	}
 
 	virtual void print_aggregated_results() override {
-		bool computed_full_homology = total_cell_count.size() > 0 && min_dimension == 0 && max_dimension == std::numeric_limits<unsigned short>::max();
+		bool computed_full_homology = total_cell_count.size() > 0 && min_dimension == 0 && max_dimension == std::numeric_limits<unsigned int>::max();
 
-		int first_dimension = std::max(0, min_dimension - 1);
+		int first_dimension = std::max<unsigned int>(0, min_dimension - 1);
 		int last_dimension = total_top_dimension;
 
 		const auto info_group_id = H5Gcreate2(group_id, "info", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
@@ -152,12 +152,12 @@ public:
 		}
 	}
 
-	void computing_barcodes_in_dimension(unsigned short dimension) override {
+	void computing_barcodes_in_dimension(unsigned int dimension) override {
 		if (output_bars) {
 
 			if (dimension > min_dimension) flush_if_necessary(true);
 
-			const size_t index = dimension - std::max(0, min_dimension - 1);
+			const size_t index = dimension - std::max<unsigned int>(0, min_dimension - 1);
 			while (index >= barcode_datasets.size()) {
 				std::string s = "dimension_";
 				s += std::to_string(dimension);
@@ -230,7 +230,7 @@ public:
 	void remaining_homology_is_trivial() override {}
 
 private:
-	inline size_t current_dataset_index() { return current_dimension - std::max(0, min_dimension - 1); }
+	inline size_t current_dataset_index() { return current_dimension - std::max<unsigned int>(0, min_dimension - 1); }
 
 	void flush_if_necessary(bool force = false) {
 		if (!output_bars) return;

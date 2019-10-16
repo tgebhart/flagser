@@ -159,8 +159,8 @@ class directed_flag_complex_in_memory_computer_t {
 	filtered_directed_graph_t& graph;
 	long long euler_characteristic = 0;
 	filtration_algorithm_t* filtration_algorithm;
-	unsigned short max_dimension;
-	unsigned short min_dimension;
+	unsigned int max_dimension;
+	unsigned int min_dimension;
 	int current_dimension = 0;
 	bool _is_top_dimension = false;
 	std::vector<size_t> cell_count;

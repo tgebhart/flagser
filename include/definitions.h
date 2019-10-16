@@ -10,7 +10,7 @@
 
 #ifndef MANY_VERTICES
 // Assume that we have at most 65k vertices, and that there are at most ~2 billion cells
-typedef unsigned short vertex_index_t;
+typedef unsigned int vertex_index_t;
 typedef int32_t index_t;
 #else
 // Assume that we have at most 65k vertices, and that there are at most ~2 billion cells

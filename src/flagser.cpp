@@ -43,8 +43,8 @@ void
 compute_homology(filtered_directed_graph_t& graph, const named_arguments_t& named_arguments, size_t max_entries,
                  coefficient_t modulus) {
 
-	unsigned short max_dimension = std::numeric_limits<unsigned short>::max();
-	unsigned short min_dimension = 0;
+	unsigned int max_dimension = std::numeric_limits<unsigned int>::max();
+	unsigned int min_dimension = 0;
 	bool split_into_connected_components = named_arguments.find("components") != named_arguments.end();
 
 	named_arguments_t::const_iterator it;

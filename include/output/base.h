@@ -11,7 +11,7 @@ public:
 	virtual void set_complex(Complex* complex){};
 	virtual void print(std::string s){};
 	virtual void finished(bool with_cell_counts){};
-	virtual void computing_barcodes_in_dimension(unsigned short dimension){};
+	virtual void computing_barcodes_in_dimension(unsigned int dimension){};
 	virtual void new_barcode(value_t birth, value_t death){};
 	virtual void new_infinite_barcode(value_t birth){};
 	virtual void skipped_column(value_t birth){};

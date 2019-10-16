@@ -144,7 +144,7 @@ def generate_code(parse_tree):
                     override_edges_code = "\nvirtual inline bool overwrite_edge_filtration() const { return true; }"
         ret += """
 struct {name}_filtration : public filtration_algorithm_t {{
-    virtual inline value_t compute_filtration(unsigned short dimension, const directed_flag_complex_cell_t& cell,
+    virtual inline value_t compute_filtration(unsigned int dimension, const directed_flag_complex_cell_t& cell,
                                     const filtered_directed_graph_t& graph,
                                     const value_t* boundary_filtration) const {{
         {expression}
